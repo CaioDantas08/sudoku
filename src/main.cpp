@@ -40,6 +40,7 @@ int main(int argc, char** argv) {
   RunningOptions runop = parse_cli_arguments(argc, argv);
   SudokuGame game;
   // Set up simulation.
+  bem_vindo();
   game.setup(runop);
   // The Game Loop (Architecture)
   while (not game.game_over()) {

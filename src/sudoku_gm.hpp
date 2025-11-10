@@ -12,6 +12,8 @@
 #include "board.hpp"
 #include "module_cli.hpp"  // where RunningOptions is defined.
 
+void bem_vindo();
+
 /// Game class representing a Life Game simulation manager.
 class SudokuGame {
 private:

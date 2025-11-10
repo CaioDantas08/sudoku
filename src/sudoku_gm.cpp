@@ -2,6 +2,18 @@
 #include "../lib/tcolor.hpp"
 #include "module_cli.hpp"
 
+void bem_vindo(){
+    std::cout << ">>> Opening input file [...]data(input.txt).\n";
+    std::cout << ">>> Processing data, please wait.\n";
+    std::cout << ">>> Finished reading input data file.\n";
+    std::cout << "\n";
+    std::cout << "Welcome to a terminal version of Sudoku, v1.0\n";
+    std::cout << "Copyright (C) 2020, Selan R. dos Santos\n";
+    std::cout << "\n";
+    std::cout << "Press enter to start.\n";
+    std::cin.ignore(); 
+}
+
 SudokuGame::SudokuGame() {
   // TODO: edit or remove as you wish.
 }
