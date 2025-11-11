@@ -33,7 +33,12 @@ void SudokuGame::process_events() {
   }
 }
 
-void SudokuGame::setup(const RunningOptions& run_opt) {}
+void SudokuGame::setup(const RunningOptions& run_opt){
+
+  std::ifstream file(run_opt.input_file);
+
+
+}
 
 void SudokuGame::update() {}
 
