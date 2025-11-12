@@ -110,6 +110,20 @@ bool SudokuBoard::eh_jogada_valida(value_type linha, value_type coluna, value_ty
   }
 
   //Lógica da região 3x3
+  if (eh_valida) {
+        int inicio_linha = (linha / 3) * 3;
+        int inicio_coluna = (coluna / 3) * 3;
+
+        for (value_type r = inicio_linha; r < inicio_linha + 3; r++) {
+            for (value_type c = inicio_coluna; c < inicio_coluna + 3; c++) {
+                if (digito == m_board[r * max_dim + c]) {
+                    eh_valida = false;
+                    break;
+                }
+            }
+            if (!eh_valida) break;
+        }
+    }
 
 
   return eh_valida;
