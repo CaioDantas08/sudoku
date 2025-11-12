@@ -18,7 +18,7 @@ private:
   std::array<bool, max_dim * max_dim> m_fixed;
 
 public:
-  SudokuBoard();
+  SudokuBoard(); 
 
   bool carregar_arquivo(std::istream& ler_tabuleiro);
   value_type get_valor(value_type linha, value_type coluna) const;
