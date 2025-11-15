@@ -44,3 +44,4 @@ Apresenta um fluxo correto entre telas, com opção de retomar uma partida suspe
 
 <!-- TODO -->
 Indique aqui como compilar e executar seu programa.
+ g++ -std=c++17 -I. main.cpp sudoku_gm.cpp board.cpp module_cli.cpp -o sudoku

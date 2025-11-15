@@ -44,9 +44,10 @@ int main(int argc, char** argv) {
   game.setup(runop);
   // The Game Loop (Architecture)
   while (not game.game_over()) {
+    game.render();
     game.process_events();
     game.update();
-    game.render();
+    
   }
   return EXIT_SUCCESS;
 }

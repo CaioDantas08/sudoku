@@ -1,17 +1,18 @@
 #include "board.hpp"
-
+#include <iostream>
 SudokuBoard::SudokuBoard() {
   // Empty board.
     std::fill(m_board.begin(), m_board.end(), 0);
 }
 
+
 //Carregar o pluzze do arquivo
 bool SudokuBoard::carregar_arquivo(std::istream& ler_tabuleiro){
 
-  if(ler_tabuleiro.is_open()){
 
     for (value_type i = 0; i < 81; i++){
       int valor{0};
+      if(!(ler_tabuleiro >> valor)) return false;
       ler_tabuleiro >> valor;
 
       if(valor <= 0){
@@ -22,15 +23,12 @@ bool SudokuBoard::carregar_arquivo(std::istream& ler_tabuleiro){
         m_fixed[i] = true;
       }    
     }
-  }else{
-    return false;
-  } 
 
   return true;
 }
 
 //Capturar valor da celula
-value_type SudokuBoard::get_valor(value_type linha, value_type coluna) const{
+int SudokuBoard::get_valor(value_type linha, value_type coluna) const{
   return m_board[linha*max_dim + coluna];
 }
 
@@ -130,7 +128,63 @@ bool SudokuBoard::eh_jogada_valida(value_type linha, value_type coluna, value_ty
 }
 
 //Exibir tabuleiro
-void SudokuBoard::exibir_tabuleiro() const{
+void SudokuBoard::exibir_tabuleiro(bool modo_verificacao) const{
+
+    const std::string RESET = "\033[0m";
+    const std::string BRANCO_NEGRITO = "\033[1;37m";  // Fixo
+    const std::string AZUL = "\033[1;34m";            // Normal usuário
+    const std::string VERMELHO = "\033[1;31m";        // Inválido (verificação)
+    const std::string VERDE = "\033[1;32m";           // Correto (verificação)
+
+    // Coordenadas das colunas
+    std::cout << "   1 2 3   4 5 6   7 8 9\n";
+    std::cout << "  +-------+-------+-------+\n";
+    
+    for(int linha = 0; linha < 9; linha++){
+        // Coordenada da linha
+        std::cout << char('A' + linha) << " | ";
+        
+        for(int coluna = 0; coluna < 9; coluna++){
+            int valor = get_valor(linha, coluna);
+            std::string cor = RESET;
+            
+            
+            if(eh_fixa(linha, coluna)){
+                cor = BRANCO_NEGRITO;  // Se é fixa, cor branca
+            }else if(valor != 0){
+                if(modo_verificacao){
+                    if(eh_jogada_valida(linha, coluna, valor)){
+                        cor = VERDE; //Se é válida e o modo de verificação tá ativado, cor verde.
+                    }else{
+                        cor = VERMELHO; //Se é jogada inválida, vermelho
+                    }
+                }else{
+                    cor = AZUL; //Caso o modo de verificacao for false
+                }
+            }
+            
+        
+            if(valor == 0){
+                std::cout << ". ";
+            }else{
+                std::cout << cor << valor << RESET << " ";
+            }
+            
+            // Separadores de região
+            if (coluna == 2 || coluna == 5) {
+                std::cout << "| ";
+            }
+        }
+        
+        std::cout << "|\n";
+        
+        // Separadores de região entre linhas
+        if (linha == 2 || linha == 5) {
+            std::cout << "  +-------+-------+-------+\n";
+        }
+    }
+    
+    std::cout << "  +-------+-------+-------+\n";
 
 }
 
@@ -141,5 +195,19 @@ bool SudokuBoard::jogo_completo() const{
     if((g == 0)) completou = false;
   }
   return completou;
+}
+
+bool SudokuBoard::resultado_jogo() const{
+
+  bool acertou{true};
+
+  for (value_type i = 0; i < 9; i++){
+    for (value_type j= 0; j < 9; j++){
+      if(!eh_jogada_valida(i,j,get_valor(i,j))){
+        acertou = false;
+      }
+    }
+  }
+  return acertou;
 }
 

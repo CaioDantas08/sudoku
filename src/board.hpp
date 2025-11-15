@@ -10,7 +10,7 @@
 #include <iostream>
 class SudokuBoard {
 public:
-  using value_type = short;
+  using value_type = int;
   static constexpr value_type max_dim{ 9 };
 
 private:
@@ -28,8 +28,9 @@ public:
   bool remover_digito(value_type linha, value_type coluna);
   void limpar_tabuleiro();
   bool eh_jogada_valida(value_type linha, value_type coluna, value_type digito) const;
-  void exibir_tabuleiro() const;
+  void exibir_tabuleiro(bool modo_verificacao) const;
   bool jogo_completo() const;
+  bool resultado_jogo() const;
 };
 
 

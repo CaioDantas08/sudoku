@@ -1,7 +1,7 @@
 #ifndef MODULE_CLI_HPP
 #define MODULE_CLI_HPP
 #include <string>
-
+#include <iostream>
 using value_type = int;
 using type_name = std::string;
 
