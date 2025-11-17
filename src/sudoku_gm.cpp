@@ -1,3 +1,4 @@
+
 	
 #include "sudoku_gm.hpp"
 #include "../lib/tcolor.hpp"
@@ -52,7 +53,7 @@ void SudokuGame::help() {
   std::cout << "Press enter to go back.\n\n\n";
 
   std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-  std::cin.get(); 
+
 
     std::cout << "|--------[ MAIN SCREEN ]--------|" << std::endl;
     selection_board = m_puzzles[current_puzzle];
@@ -73,20 +74,22 @@ bool SudokuGame::game_over() {
 }
 
 void SudokuGame::process_events(){
+
+  
+  if(m_game_state == game_state_e::MENU){
+
   std::string opcao_selecionada;
-  std::cin >> opcao_selecionada;
+  std::getline(std::cin, opcao_selecionada);
 
   value_type opcao = std::stoi(opcao_selecionada);
   if(opcao < 1 || opcao > 5){
     std::cerr << "Erro: não existe essa opção." << std::endl;
     return;
   }
-  
-  if(m_game_state == game_state_e::MENU){
 
   if(opcao_selecionada == "1"){
     m_game_state = game_state_e::PLAYING;
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    selection_board = m_puzzles[current_puzzle];
   }else if(opcao_selecionada == "2"){
     current_puzzle = (current_puzzle + 1) % m_puzzles.size();
   }else if(opcao_selecionada == "3"){
@@ -128,7 +131,17 @@ void SudokuGame::setup(const RunningOptions& run_opt){
 }
 
 void SudokuGame::update() {
-
+   //Se o jogo completou
+    if(selection_board.jogo_completo()){
+      if(selection_board.resultado_jogo()){
+        selection_board.exibir_tabuleiro(true);
+        std::cout << "Parabéns, você ganhou!" << std::endl;
+      }else{
+        selection_board.exibir_tabuleiro(true);
+        std::cout << "Que pena, há erros no tabuleiro." << std::endl;
+      }
+      m_game_state = game_state_e::MENU;
+    }
 }
 
 void SudokuGame::render() {
@@ -152,13 +165,13 @@ void SudokuGame::render() {
 
   else if(m_game_state == game_state_e::PLAYING){
 
-    selection_board = m_puzzles[current_puzzle];
+    
 
     selection_board.exibir_tabuleiro(false);
     std::cout << "Verificações restantes: " << verifications_board << "\n";
     std::cout << "Digite comando: ";
     
-    while(!selection_board.jogo_completo() && m_game_state == game_state_e::PLAYING){
+
 
      std::string letraslinha_maiuscula  = "ABCDEFGHI"; 
      std::string letraslinha_minuscula  = "abcdefghi";
@@ -170,10 +183,11 @@ void SudokuGame::render() {
 
     if(input.empty()){
       m_game_state = game_state_e::MENU;
-      return;
+      render();
+      
     }
     //Inserir um dígito
-    else if(input[0] == 'p' && input.size() >=4){
+    else if((input[0] == 'p' or input[0] == 'P') && input.size() >=4){
 
       char char_linha  = input[1];
       char char_coluna = input[2];
@@ -224,7 +238,7 @@ void SudokuGame::render() {
 
     }
     //Fazer uma verificação
-    else if(input[0] == 'c' && input.size() == 1){
+    else if((input[0] == 'c' or input[0] == 'C') && input.size() == 1){
 
       if(verifications_board > 0){
         selection_board.exibir_tabuleiro(true);
@@ -235,7 +249,7 @@ void SudokuGame::render() {
 
     }
     //Remover o digito
-    else if(input[0] == 'r' && input.size() >=3){
+    else if((input[0] == 'r' or input[0] == 'R') && input.size() >=3){
       char char_linha;
       char char_coluna;
 
@@ -278,17 +292,9 @@ void SudokuGame::render() {
     }
     
 
-
-    }
-    //Se o jogo completou
-    if(selection_board.jogo_completo()){
-      if(selection_board.resultado_jogo()){
-        std::cout << "Parabéns, você ganhou!" << std::endl;
-      }else{
-        std::cout << "Que pena, há erros no tabuleiro." << std::endl;
-      }
-    }
-    m_game_state = game_state_e::MENU;
+  
+    
+   
   }
   else if(m_game_state == game_state_e::QUITTING){
     exit(EXIT_SUCCESS); // O correto é over = true;
@@ -312,6 +318,8 @@ void SudokuGame::render() {
   
 
 }
+
+
 
 
 

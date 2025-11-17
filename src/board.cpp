@@ -13,7 +13,7 @@ bool SudokuBoard::carregar_arquivo(std::istream& ler_tabuleiro){
     for (value_type i = 0; i < 81; i++){
       int valor{0};
       if(!(ler_tabuleiro >> valor)) return false;
-      ler_tabuleiro >> valor;
+
 
       if(valor <= 0){
         m_board[i] = 0;

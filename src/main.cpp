@@ -35,7 +35,8 @@
 
 #include "module_cli.hpp"  // contains parse_cli_arguments(...).
 #include "sudoku_gm.hpp"   // contains SudokuGame class definition.
-
+#include <chrono>
+#include <thread>
 int main(int argc, char** argv) {
   RunningOptions runop = parse_cli_arguments(argc, argv);
   SudokuGame game;
@@ -47,7 +48,7 @@ int main(int argc, char** argv) {
     game.render();
     game.process_events();
     game.update();
-    
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
   }
   return EXIT_SUCCESS;
 }
