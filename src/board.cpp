@@ -94,6 +94,7 @@ bool SudokuBoard::eh_jogada_valida(value_type linha, value_type coluna, value_ty
 
   //Verificando repetições na linha
   for(value_type c = 0; c < 9; c++){
+    if(c == coluna) continue;
     if(digito == m_board[linha * max_dim + c]){
         eh_valida = false;
         break;
@@ -101,6 +102,7 @@ bool SudokuBoard::eh_jogada_valida(value_type linha, value_type coluna, value_ty
   }
   //Verificando repetições na coluna
   for(value_type r = 0; r < 9; r++) {
+    if(r == linha) continue;
     if(digito == m_board[r * max_dim + coluna]){
         eh_valida = false;
         break;
@@ -114,6 +116,7 @@ bool SudokuBoard::eh_jogada_valida(value_type linha, value_type coluna, value_ty
 
         for (value_type r = inicio_linha; r < inicio_linha + 3; r++) {
             for (value_type c = inicio_coluna; c < inicio_coluna + 3; c++) {
+                if(r == linha && coluna == c) continue;
                 if (digito == m_board[r * max_dim + c]) {
                     eh_valida = false;
                     break;
@@ -128,7 +131,7 @@ bool SudokuBoard::eh_jogada_valida(value_type linha, value_type coluna, value_ty
 }
 
 //Exibir tabuleiro
-void SudokuBoard::exibir_tabuleiro(bool modo_verificacao) const{
+void SudokuBoard::exibir_tabuleiro(bool modo_verificacao, value_type ultima_linha, value_type ultima_coluna) const{
 
     const std::string RESET = "\033[0m";
     const std::string BRANCO_NEGRITO = "\033[1;37m";  // Fixo
@@ -136,11 +139,35 @@ void SudokuBoard::exibir_tabuleiro(bool modo_verificacao) const{
     const std::string VERMELHO = "\033[1;31m";        // Inválido (verificação)
     const std::string VERDE = "\033[1;32m";           // Correto (verificação)
 
+
     // Coordenadas das colunas
-    std::cout << "   1 2 3   4 5 6   7 8 9\n";
-    std::cout << "  +-------+-------+-------+\n";
+    std::cout << "      1 2 3   4 5 6   7 8 9\n";
+    
+
+
+    std::cout << "      ";
+    for(int col = 0; col < 9; col++){
+        if(col == ultima_coluna){
+            std::cout << VERMELHO << "v " << RESET << " ";  
+        }else{
+            std::cout << "  ";
+        }
+
+        if(col == 2 or col == 5){
+          std::cout << "  ";
+        }
+    }
+    std::cout << "\n";
+
+    std::cout << "    +-------+-------+-------+\n";
     
     for(int linha = 0; linha < 9; linha++){
+
+      if(linha == ultima_linha){
+            std::cout << VERMELHO << ">" << RESET << " ";
+      }else{
+            std::cout << "  ";
+      }
         // Coordenada da linha
         std::cout << char('A' + linha) << " | ";
         
@@ -180,11 +207,11 @@ void SudokuBoard::exibir_tabuleiro(bool modo_verificacao) const{
         
         // Separadores de região entre linhas
         if (linha == 2 || linha == 5) {
-            std::cout << "  +-------+-------+-------+\n";
+            std::cout << "    +-------+-------+-------+\n";
         }
     }
     
-    std::cout << "  +-------+-------+-------+\n";
+    std::cout << "    +-------+-------+-------+\n";
 
 }
 

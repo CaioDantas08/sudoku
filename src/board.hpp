@@ -28,10 +28,14 @@ public:
   bool remover_digito(value_type linha, value_type coluna);
   void limpar_tabuleiro();
   bool eh_jogada_valida(value_type linha, value_type coluna, value_type digito) const;
-  void exibir_tabuleiro(bool modo_verificacao) const;
+
+  void exibir_tabuleiro(bool modo_verificacao, value_type ultima_linha = -1, 
+    value_type ultima_coluna = -1) const;
+
   bool jogo_completo() const;
   bool resultado_jogo() const;
 };
+
 
 
 

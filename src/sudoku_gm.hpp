@@ -16,6 +16,7 @@ void bem_vindo();
 
 using value_type = int;
 
+
 /// Game class representing a Life Game simulation manager.
 class SudokuGame {
 private:
@@ -40,8 +41,11 @@ private:
 
   bool over{false};
   value_type verifications_board{3}; // numero de verificações
+  value_type const_verifications_board{3};
   value_type current_puzzle{0}; //Verificar o pluzze atual
   SudokuBoard selection_board; //Jogo atual
+  value_type ultima_linha{-1};
+  value_type ultima_coluna{-1};
 
 public:
   SudokuGame();

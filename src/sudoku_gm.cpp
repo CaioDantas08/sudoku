@@ -7,6 +7,9 @@
 #include <string>
 #include <fstream>
 #include <limits>
+#include <chrono>
+#include <thread>
+
 
 void bem_vindo(){
     std::cout << ">>> Opening input file [...]data(input.txt).\n";
@@ -53,6 +56,7 @@ void SudokuGame::help() {
   std::cout << "Press enter to go back.\n\n\n";
 
   std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+  std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
 
     std::cout << "|--------[ MAIN SCREEN ]--------|" << std::endl;
@@ -77,11 +81,38 @@ void SudokuGame::process_events(){
 
   
   if(m_game_state == game_state_e::MENU){
-
+  verifications_board = const_verifications_board;
   std::string opcao_selecionada;
   std::getline(std::cin, opcao_selecionada);
 
-  value_type opcao = std::stoi(opcao_selecionada);
+  if(opcao_selecionada.empty()){
+    std::cerr << "\nDeseja fechar o programa?(S/N)";
+    char decisao;
+    std::cin >> decisao;
+
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+
+    bool sim = decisao == 'S' or decisao == 's';
+    bool nao = decisao == 'N' or decisao == 'n';
+    if(!(sim or nao)){
+      std::cerr << "Erro: mensagem não reconhecida\n";
+      return;
+    }
+    else if(sim){
+      exit(EXIT_SUCCESS);
+    }else{
+      return; 
+    }
+  }
+  value_type opcao{-1};
+    try{
+       opcao = std::stoi(opcao_selecionada);      
+    }catch(...){
+    std::cerr << "Erro: não existe essa opção." << std::endl;
+    return;       
+    }
+
   if(opcao < 1 || opcao > 5){
     std::cerr << "Erro: não existe essa opção." << std::endl;
     return;
@@ -123,7 +154,7 @@ void SudokuGame::setup(const RunningOptions& run_opt){
   }
 
   verifications_board = run_opt.number_verifications;
-
+  const_verifications_board = verifications_board;
   m_game_state = game_state_e::STARTING; 
 
 
@@ -135,10 +166,12 @@ void SudokuGame::update() {
     if(selection_board.jogo_completo()){
       if(selection_board.resultado_jogo()){
         selection_board.exibir_tabuleiro(true);
-        std::cout << "Parabéns, você ganhou!" << std::endl;
+        std::cout << "Parabéns, você ganhou!\n" << std::endl;
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
       }else{
         selection_board.exibir_tabuleiro(true);
-        std::cout << "Que pena, há erros no tabuleiro." << std::endl;
+        std::cout << "Que pena, há erros no tabuleiro.\n" << std::endl;
+        std::this_thread::sleep_for(std::chrono::milliseconds(500));
       }
       m_game_state = game_state_e::MENU;
     }
@@ -167,7 +200,7 @@ void SudokuGame::render() {
 
     
 
-    selection_board.exibir_tabuleiro(false);
+    selection_board.exibir_tabuleiro(false, ultima_linha, ultima_coluna);
     std::cout << "Verificações restantes: " << verifications_board << "\n";
     std::cout << "Digite comando: ";
     
@@ -182,12 +215,30 @@ void SudokuGame::render() {
     std::getline(std::cin,input);
 
     if(input.empty()){
+
+    std::cerr << "\nDeseja fechar o game?(S/N)";
+    char decisao;
+    std::cin >> decisao;
+
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+
+    bool sim = decisao == 'S' or decisao == 's';
+    bool nao = decisao == 'N' or decisao == 'n';
+    if(!(sim or nao)){
+      std::cerr << "Erro: mensagem não reconhecida\n";
+      return;
+    }
+    else if(sim){
       m_game_state = game_state_e::MENU;
       render();
+    }else{
+      return; 
+    }
       
     }
     //Inserir um dígito
-    else if((input[0] == 'p' or input[0] == 'P') && input.size() >=4){
+    else if((input[0] == 'p' or input[0] == 'P') && input.size() ==4){
 
       char char_linha  = input[1];
       char char_coluna = input[2];
@@ -232,6 +283,8 @@ void SudokuGame::render() {
 
       if(selection_board.eh_vazia(linha,coluna)){
         selection_board.colocar_digito(linha,coluna,digito);
+        ultima_linha = linha;
+        ultima_coluna = coluna;
       }else{
         std::cerr << "Erro: célula ocupada." << std::endl;                        
       }    
@@ -241,7 +294,7 @@ void SudokuGame::render() {
     else if((input[0] == 'c' or input[0] == 'C') && input.size() == 1){
 
       if(verifications_board > 0){
-        selection_board.exibir_tabuleiro(true);
+        selection_board.exibir_tabuleiro(true, ultima_linha, ultima_coluna);
         verifications_board--;
       }else{
         std::cerr << "Número de verificações esgotado!" << std::endl;
@@ -249,7 +302,7 @@ void SudokuGame::render() {
 
     }
     //Remover o digito
-    else if((input[0] == 'r' or input[0] == 'R') && input.size() >=3){
+    else if((input[0] == 'r' or input[0] == 'R') && input.size() ==3){
       char char_linha;
       char char_coluna;
 
@@ -276,10 +329,17 @@ void SudokuGame::render() {
           break;
         }
       }
+
+      if(linha == -1 || coluna == -1){
+        std::cerr << "Erro: coordenadas inválidas\n";
+        return;
+      } 
       
 
       if(!selection_board.eh_vazia(linha,coluna) && !selection_board.eh_fixa(linha,coluna)){
         selection_board.remover_digito(linha,coluna);
+        ultima_linha = linha;
+        ultima_coluna = coluna;
       }else{
         std::cerr << "Erro: célula fixa ocupando ou vazia." << std::endl;                        
       }
@@ -288,13 +348,12 @@ void SudokuGame::render() {
     }
     //Desfazer ultima jogada
     else if(input[0] == 'u'){
-      
+      //Usar um vector ou estudar como se usa uma pilha 
+    }else{
+      std::cerr << "Erro: comando inválido.\n";
+      return;
     }
     
-
-  
-    
-   
   }
   else if(m_game_state == game_state_e::QUITTING){
     exit(EXIT_SUCCESS); // O correto é over = true;
