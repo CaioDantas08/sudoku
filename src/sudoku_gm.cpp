@@ -59,12 +59,13 @@ void SudokuGame::help() {
   std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
 
-    std::cout << "|--------[ MAIN SCREEN ]--------|" << std::endl;
-    selection_board = m_puzzles[current_puzzle];
+    std::cout << AZUL << "|--------[ MAIN SCREEN ]--------|" << RESET << "" << std::endl;
+
     selection_board.exibir_tabuleiro(false);
-    std::cout << "MSG: []\n";
-    std::cout << "1-Play 2-New Game 3-Load Saved Game 4-Quit 5-Help\n";
-    std::cout << "Select option [1,5] > ";
+
+    std::cout << AMARELO << "MSG: []" << RESET << "\n";
+    std::cout << AMARELO << "1-Play 2-New Game 3-Load Saved Game 4-Quit 5-Help\n";
+    std::cout << "Select option [1,5] > " << RESET << "";
 
   
 
@@ -81,9 +82,12 @@ void SudokuGame::process_events(){
 
   
   if(m_game_state == game_state_e::MENU){
+
   verifications_board = const_verifications_board;
   std::string opcao_selecionada;
   std::getline(std::cin, opcao_selecionada);
+
+
 
   if(opcao_selecionada.empty()){
     std::cerr << "\nDeseja fechar o programa?(S/N)";
@@ -105,9 +109,11 @@ void SudokuGame::process_events(){
       return; 
     }
   }
+
+
   value_type opcao{-1};
     try{
-       opcao = std::stoi(opcao_selecionada);      
+       opcao = std::stoi(opcao_selecionada);    
     }catch(...){
     std::cerr << "Erro: não existe essa opção." << std::endl;
     return;       
@@ -119,12 +125,58 @@ void SudokuGame::process_events(){
   }
 
   if(opcao_selecionada == "1"){
+
+    
     m_game_state = game_state_e::PLAYING;
-    selection_board = m_puzzles[current_puzzle];
+    if(!saiu_da_partida){
+      selection_board = m_puzzles[current_puzzle];
+    }
+    ultima_linha = -1;
+    ultima_coluna = -1;
+
+    salvar_jogadas.push(selection_board);
+
   }else if(opcao_selecionada == "2"){
     current_puzzle = (current_puzzle + 1) % m_puzzles.size();
+
+    selection_board = m_puzzles[current_puzzle];
+    if(saiu_da_partida){
+      while(salvar_jogadas.size() > 0){
+        salvar_jogadas.pop();
+      }
+      saiu_da_partida = false;
+    }
+
   }else if(opcao_selecionada == "3"){
-    //SALVAR ARQUIVO
+
+    //IMPLEMENTAR O SALVAR GAME AQUI, DAMIÃO!!!
+    //CRIE FUNÇÕES/MÉTODOS AUXILIARES SE PRECISAR
+
+    //OBS: PRECISA PASSAR O SALVAR JOGADAS, POIS O USUÀRIO PODE DESFAZER
+    //JOGADAS, E PARA ISSO ACONTECER, PRECISA DA PILHA QUE ARMAZENOU 
+    //O PROGRESSO DO JOGO.
+
+    //Verifica se é um tabuleiro inicial, já que não faz sentido salvar algo vazio
+    for(const auto& g : m_puzzles){
+      if(g == selection_board){
+        std::cerr << "Erro: salvando jogo vazio.\n";
+        return;
+      }
+    }
+    //SE NÂO FOR IGUAL A UM TABULEIRO INICIAL,
+    //SALVAR PILHA NO ARQUIVO(AÍ É COM TU)
+    //.... (CODANDO)
+    //.... (MAIS CÓDIGO)
+
+    //Depois de salvar, esvaziar salvar_jogadas
+    while(salvar_jogadas.size() != 0){
+      salvar_jogadas.pop();
+    }
+    //Deixa o booleano de controle como false e exibe um puzzle original
+    saiu_da_partida = false;
+    selection_board = m_puzzles[current_puzzle];
+
+
   }else if(opcao_selecionada == "4"){
     m_game_state = game_state_e::QUITTING;
   }else if(opcao_selecionada == "5"){
@@ -168,11 +220,21 @@ void SudokuGame::update() {
         selection_board.exibir_tabuleiro(true);
         std::cout << "Parabéns, você ganhou!\n" << std::endl;
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
+
+            while(salvar_jogadas.empty() > 0){
+              salvar_jogadas.pop();
+            }
+
       }else{
         selection_board.exibir_tabuleiro(true);
         std::cout << "Que pena, há erros no tabuleiro.\n" << std::endl;
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
+
+            while(salvar_jogadas.empty() > 0){
+              salvar_jogadas.pop();
+            }
       }
+      selection_board = m_puzzles[current_puzzle];
       m_game_state = game_state_e::MENU;
     }
 }
@@ -184,12 +246,12 @@ void SudokuGame::render() {
     bem_vindo();
     m_game_state = game_state_e::MENU;
 
-    std::cout << "|--------[ MAIN SCREEN ]--------|" << std::endl;
+    std::cout << AZUL << "|--------[ MAIN SCREEN ]--------|" << RESET << "" << std::endl;
     selection_board = m_puzzles[current_puzzle];
     selection_board.exibir_tabuleiro(false);
-    std::cout << "MSG: []\n";
-    std::cout << "1-Play 2-New Game 3-Load Saved Game 4-Quit 5-Help\n";
-    std::cout << "Select option [1,5] > ";
+    std::cout << AMARELO << "MSG: []" << RESET << "\n";
+    std::cout << AMARELO << "1-Play 2-New Game 3-Load Saved Game 4-Quit 5-Help\n";
+    std::cout << "Select option [1,5] > " << RESET << "";
   }
   else if(m_game_state == game_state_e::HELPING){
     help();
@@ -232,13 +294,14 @@ void SudokuGame::render() {
     else if(sim){
       m_game_state = game_state_e::MENU;
       render();
+      saiu_da_partida = true;
     }else{
       return; 
     }
       
     }
     //Inserir um dígito
-    else if((input[0] == 'p' or input[0] == 'P') && input.size() ==4){
+    else if((input[0] == 'p' or input[0] == 'P') && input.size() == 4){
 
       char char_linha  = input[1];
       char char_coluna = input[2];
@@ -285,6 +348,7 @@ void SudokuGame::render() {
         selection_board.colocar_digito(linha,coluna,digito);
         ultima_linha = linha;
         ultima_coluna = coluna;
+        salvar_jogadas.push(selection_board);
       }else{
         std::cerr << "Erro: célula ocupada." << std::endl;                        
       }    
@@ -302,7 +366,7 @@ void SudokuGame::render() {
 
     }
     //Remover o digito
-    else if((input[0] == 'r' or input[0] == 'R') && input.size() ==3){
+    else if((input[0] == 'r' or input[0] == 'R') && input.size() == 3){
       char char_linha;
       char char_coluna;
 
@@ -340,6 +404,7 @@ void SudokuGame::render() {
         selection_board.remover_digito(linha,coluna);
         ultima_linha = linha;
         ultima_coluna = coluna;
+        salvar_jogadas.push(selection_board);
       }else{
         std::cerr << "Erro: célula fixa ocupando ou vazia." << std::endl;                        
       }
@@ -347,8 +412,15 @@ void SudokuGame::render() {
       
     }
     //Desfazer ultima jogada
-    else if(input[0] == 'u'){
-      //Usar um vector ou estudar como se usa uma pilha 
+    else if(input[0] == 'u' && input.size() == 1){
+        //Usar um vector ou estudar como se usa uma pilha 
+        if(salvar_jogadas.size() < 2){
+          std::cerr << "Erro: tabuleiro já está em estado inicial.\n";
+          return;
+        }
+        salvar_jogadas.pop(); //Apaga o elemento do topo(last in, first out)
+        selection_board = salvar_jogadas.top(); //Pega o topo, que era o tabuleiro antes da jogada
+
     }else{
       std::cerr << "Erro: comando inválido.\n";
       return;
@@ -360,15 +432,14 @@ void SudokuGame::render() {
   }
   else if(m_game_state == game_state_e::MENU){
 
-    std::cout << "|--------[ MAIN SCREEN ]--------|" << std::endl;
-
-    selection_board = m_puzzles[current_puzzle];
+    std::cout << AZUL << "|--------[ MAIN SCREEN ]--------|" << RESET << "" << std::endl;
     selection_board.exibir_tabuleiro(false);
 
-    std::cout << "MSG: []\n";
 
-    std::cout << "1-Play 2-New Game 3-Load Saved Game 4-Quit 5-Help\n";
-    std::cout << "Select option [1,5] > ";
+    std::cout << AMARELO << "MSG: []" << RESET << "\n";
+
+    std::cout << AMARELO << "1-Play 2-New Game 3-Load Saved Game 4-Quit 5-Help\n";
+    std::cout << "Select option [1,5] > " << RESET << "";
 
     
   }

@@ -32,6 +32,8 @@ public:
   void exibir_tabuleiro(bool modo_verificacao, value_type ultima_linha = -1, 
     value_type ultima_coluna = -1) const;
 
+  bool operator==(const SudokuBoard& other) const;
+
   bool jogo_completo() const;
   bool resultado_jogo() const;
 };

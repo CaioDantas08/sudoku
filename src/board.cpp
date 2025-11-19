@@ -138,10 +138,11 @@ void SudokuBoard::exibir_tabuleiro(bool modo_verificacao, value_type ultima_linh
     const std::string AZUL = "\033[1;34m";            // Normal usuário
     const std::string VERMELHO = "\033[1;31m";        // Inválido (verificação)
     const std::string VERDE = "\033[1;32m";           // Correto (verificação)
+    const std::string AMARELO_CLARO = "\x1b[93m";
 
 
     // Coordenadas das colunas
-    std::cout << "      1 2 3   4 5 6   7 8 9\n";
+    std::cout << VERDE << "      1 2 3   4 5 6   7 8 9" << RESET << "\n";
     
 
 
@@ -159,7 +160,7 @@ void SudokuBoard::exibir_tabuleiro(bool modo_verificacao, value_type ultima_linh
     }
     std::cout << "\n";
 
-    std::cout << "    +-------+-------+-------+\n";
+    std::cout << AMARELO_CLARO << "    +-------+-------+-------+" << RESET << "\n";
     
     for(int linha = 0; linha < 9; linha++){
 
@@ -169,7 +170,7 @@ void SudokuBoard::exibir_tabuleiro(bool modo_verificacao, value_type ultima_linh
             std::cout << "  ";
       }
         // Coordenada da linha
-        std::cout << char('A' + linha) << " | ";
+        std::cout << VERDE << char('A' + linha) << AMARELO_CLARO << " | " << RESET << "";
         
         for(int coluna = 0; coluna < 9; coluna++){
             int valor = get_valor(linha, coluna);
@@ -199,19 +200,19 @@ void SudokuBoard::exibir_tabuleiro(bool modo_verificacao, value_type ultima_linh
             
             // Separadores de região
             if (coluna == 2 || coluna == 5) {
-                std::cout << "| ";
+                std::cout << AMARELO_CLARO << "| " << RESET << "";
             }
         }
         
-        std::cout << "|\n";
+        std::cout << AMARELO_CLARO << "|" << RESET << "\n";
         
         // Separadores de região entre linhas
         if (linha == 2 || linha == 5) {
-            std::cout << "    +-------+-------+-------+\n";
+            std::cout << AMARELO_CLARO << "    +-------+-------+-------+" << RESET << "\n";
         }
     }
     
-    std::cout << "    +-------+-------+-------+\n";
+    std::cout << AMARELO_CLARO << "    +-------+-------+-------+" << RESET << "\n";
 
 }
 
@@ -236,5 +237,9 @@ bool SudokuBoard::resultado_jogo() const{
     }
   }
   return acertou;
+}
+
+bool SudokuBoard::operator==(const SudokuBoard& other) const{
+  return m_board == other.m_board && m_fixed == other.m_fixed;
 }
 
