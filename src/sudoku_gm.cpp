@@ -128,13 +128,13 @@ void SudokuGame::process_events(){
 
     
     m_game_state = game_state_e::PLAYING;
-    if(!saiu_da_partida){
-      selection_board = m_puzzles[current_puzzle];
+    if(salvar_jogadas.empty()) {
+        selection_board = m_puzzles[current_puzzle];
+        ultima_linha = -1;
+        ultima_coluna = -1;
+        salvar_jogadas.push(selection_board);
     }
-    ultima_linha = -1;
-    ultima_coluna = -1;
 
-    salvar_jogadas.push(selection_board);
 
   }else if(opcao_selecionada == "2"){
     current_puzzle = (current_puzzle + 1) % m_puzzles.size();
