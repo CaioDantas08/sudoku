@@ -133,7 +133,7 @@ void SudokuGame::process_events(){
         ultima_linha = -1;
         ultima_coluna = -1;
         salvar_jogadas.push(selection_board);
-    }
+    } 
 
 
   }else if(opcao_selecionada == "2"){
@@ -221,7 +221,7 @@ void SudokuGame::update() {
         std::cout << "Parabéns, você ganhou!\n" << std::endl;
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
-            while(salvar_jogadas.empty() > 0){
+            while(salvar_jogadas.size() > 0){
               salvar_jogadas.pop();
             }
 
@@ -230,7 +230,7 @@ void SudokuGame::update() {
         std::cout << "Que pena, há erros no tabuleiro.\n" << std::endl;
         std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
-            while(salvar_jogadas.empty() > 0){
+            while(salvar_jogadas.size() > 0){
               salvar_jogadas.pop();
             }
       }
