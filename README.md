@@ -1,49 +1,42 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/Twt2xWeD)
-# Intro
+# 👥 Autores e Contribuições
 
-This project implements a terminal version of the Sudoku game.
+## 📌 Origem do Projeto
+Este projeto foi inicialmente proposto como uma atividade acadêmica na **UFRN (Universidade Federal do Rio Grande do Norte)**, no âmbito do DIMAp (Departamento de Informática e Matemática Aplicada).
 
-The **full description** of the project may be found [**here**](docs/sudoku_interativo.pdf).
+A estrutura base e as diretrizes iniciais foram fornecidas pelos professores da disciplina.
 
-# The game
+---
 
-According to the [wikipedia](https://en.wikipedia.org/wiki/Sudoku):
+## 👨‍💻 Desenvolvimento
 
-> Sudoku is a logic-based, combinatorial number-placement puzzle.
-> The objective is to fill a 9×9 grid with digits so that each column, each row, and each of the nine 3×3 subgrids that compose the grid (also called "boxes", "blocks", or "regions") contain all of the digits from 1 to 9.
-> The puzzle setter provides a partially completed grid, which for a well-posed puzzle has a single solution.
+### Caio Dantas
+- Implementação da lógica principal do jogo
+- Desenvolvimento de funcionalidades
+- Melhorias e refatorações no código
+- Evolução do projeto para fins de portfólio
 
-The Sudoku rules are:
+---
 
-1. Each row, column, and nonet can contain each number (typically 1 to 9) exactly once.
-2. The sum of all numbers in any nonet, row, or column must be equal to 45.
+## 🤝 Colaboração
 
-# Input
+O projeto foi desenvolvido em ambiente acadêmico colaborativo, podendo conter contribuições de outros alunos registradas no histórico de commits.
 
-A ascii file with puzzles, as the one available in [`data/puzzles.txt`](./data/puzzles.txt).
+Essas contribuições fazem parte do contexto original da atividade.
 
-# Usage
+---
 
-```
-% ./sudoku --help
-Usage: sudoku [-c <num>] [-h] <input_cfg_file>
-  Game options:
-    -c  <num> Number of checks per game. Default = 3.
-    -h        Print this help text.
-```
+## ⚖️ Atribuição
 
-# Features
+Contexto acadêmico original e orientação:
+- UFRN / DIMAp
+- Professores da disciplina
 
-The game offers:
+Este repositório representa uma solução para a criação do sudoku game, com base inicial proposta na disciplina e posteriormente virando portifólio.
 
-- colored output.
-- indication of _invalid_ plays, i.e. plays that breaks the Sudoku's basic rules.
-- a simple interface.
-- undo actions.
-- limited possibility of checking if a move is correct or not.
+---
 
-# Author
+## 📄 Observações
 
-UFRN/DIMAp, copyright 2020-2025.
-
-Selan Santos
+- Este projeto possui finalidade educacional e demonstrativa.
+- O histórico de commits foi preservado para manter a integridade das contribuições.
+- Não há reivindicação sobre a proposta acadêmica original, apenas sobre a implementação e evolução do projeto.
